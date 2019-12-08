@@ -2,6 +2,7 @@
 
 from itertools import permutations
 
+
 def get_codes():
     with open("input.txt") as f:
         return [int(num) for num in f.readline().strip().split(",")]
@@ -40,73 +41,93 @@ def get_next_command(ip, codes):
     return ip, op, params
 
 
-def exec_command(ip, op, params, codes, inputs, output):
-    if op == 1:                            # add
+def exec_command(ip, op, params, codes, inputs, outputs):
+    if op == 1:  # add
         codes[params[2]] = params[0] + params[1]
-    elif op == 2:                          # multiply
+    elif op == 2:  # multiply
         codes[params[2]] = params[0] * params[1]
-    elif op == 3:                          # inout
+    elif op == 3:  # inout
         # val = int(input("Enter input val? "))
         val = inputs.pop(0)
         codes[params[0]] = val
-    elif op == 4:                          # output
+        # print(f"Input value = ({val})")
+    elif op == 4:  # output
         # print(f"Output value = ({params[0]})")
-        output = params[0]
-    elif op == 5:                          # branch true
+        outputs.append(params[0])
+    elif op == 5:  # branch true
         if params[0] != 0:
             ip = params[1]
-    elif op == 6:                          # branch false
+    elif op == 6:  # branch false
         if params[0] == 0:
             ip = params[1]
-    elif op == 7:                          # less than
+    elif op == 7:  # less than
         if params[0] < params[1]:
             codes[params[2]] = 1
         else:
             codes[params[2]] = 0
-    elif op == 8:                          # equals
+    elif op == 8:  # equals
         if params[0] == params[1]:
             codes[params[2]] = 1
         else:
             codes[params[2]] = 0
-    elif op == 99:                         # halt
+    elif op == 99:  # halt
+        outputs.append(-1)
         ip = -1
     else:
         print(f"Bad Op Code {op}")
         ip = -1
 
-    return ip, output
+    return ip
 
 
-def run_program(codes, inputs, output):
-    ip = 0
-    while ip != -1:
-        ip, op, params = get_next_command(ip, codes)
-        ip, output = exec_command(ip, op, params, codes, inputs, output)
-    return output
+class Amp:
+    def __init__(self):
+        self.codes = get_codes()
+        self.ip = 0
+
+    def run(self, inputs):
+        while self.ip != -1:
+            self.ip, op, params = get_next_command(self.ip, self.codes)
+            outputs = []
+            self.ip = exec_command(self.ip, op, params, self.codes, inputs, outputs)
+            if len(outputs):
+                return outputs[0]
+
 
 def main():
     """Drive the program."""
-    inputs = list(permutations(range(5)))
+    inputs = list(permutations(range(5, 10)))
 
-    # inputs = [(2,0,3, 0, 1,0,0,0,4,0)]
-    # print (inputs[:10])
-    # return
-    max = -1
-    sig = []
-    seq = []
+    signal = -1
+    l_series = None
     for series in inputs:
-        output = 0
-        l = iter(series)
-        out = []
-        for _ in range(5):
-            codes = get_codes()
-            output = run_program(codes, [next(l), output], output)
 
-        if output > max:
-            max = output
-            sig = series
-            seq = output
-    print(f'Max({max}), Signal({sig}) Out({seq})')
+        amp_a = Amp()
+        amp_b = Amp()
+        amp_c = Amp()
+        amp_d = Amp()
+        amp_e = Amp()
+
+        output = amp_a.run([series[0], 0])
+        output = amp_b.run([series[1], output])
+        output = amp_c.run([series[2], output])
+        output = amp_d.run([series[3], output])
+        output = amp_e.run([series[4], output])
+
+        largest = 0
+        while output != -1:
+            output = amp_a.run([output])
+            output = amp_b.run([output])
+            output = amp_c.run([output])
+            output = amp_d.run([output])
+            output = amp_e.run([output])
+            if output != -1:
+                largest = output
+        if largest > signal:
+            signal = largest
+            l_series = series
+    print(signal, l_series)
+
 
 if __name__ == "__main__":
     main()
