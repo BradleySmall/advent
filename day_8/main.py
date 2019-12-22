@@ -17,17 +17,7 @@ def main():
     
     layer_list = [layer for layer in image_dict.values()]
         
-    ll_ro = list(zip(*layer_list))
-    ll_v = []
-    for ll in ll_ro:
-        for l in ll:
-            if l in ('0','1'):
-                ll_v.append(l if l == '1' else ' ')
-                break
-    for i in range(6):
-        for j in range(25):
-            print(ll_v[i*25 + j], end='')
-        print()    
+    print(layer_list[:2])    
 
     # print(image_dict)
     # for layer in image_dict:
