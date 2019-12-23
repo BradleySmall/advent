@@ -15,41 +15,46 @@ def get_stroid_addrs(map):
     for row, col in itertools.product(range(len(map)), range(len(map[0]))):
         if map[row][col] == "#":
             stroid_list.append((row, col))
-        # print(f'row{row},col{col} {map[row][col]}')
     return stroid_list
 
 
 def main():
     x = input_map()
     l = get_stroid_addrs(x)
-    # print(len(l))
+
     ac_dict = {}
-    ac_dict2 = {}
+    # ac_dict2 = {}
 
     for point in l:
         angles = set()
         for point2 in l:
+            if point2 == point:
+                continue
             angles.add( math.atan2(point2[0] - point[0], point2[1] - point[1]) * 180 / math.pi)
 
         ac_dict[point] = len(angles)
-        ac_dict2[point] = angles
+        # ac_dict2[point] = angles
 
-    print(max(ac_dict.values()))
-    maxd = ""
+     # for k in ac_dict:
+     #     print(k, ac_dict[k])
+     # print(max(ac_dict.values()))
+
+    maxd = 0
+    bigd = ()
     for d in ac_dict:
-        if ac_dict[d] == 303:
-            maxd = d
-            break
+        if ac_dict[d] > maxd:
+            maxd = ac_dict[d]
+            bigd = d
 
-    print(f"Max = {d}")
-    point = d
+    print(f"Laser at {bigd}")
+    point = bigd
 
     roid_dict = {}
     for point2 in l:
         if point2 == point:
             continue
         roid_angle = round((math.atan2(point2[0] - point[0], point2[1] - point[1]) * 180 / math.pi))
-        if roid_angle <  0:
+        if roid_angle < 0:
             roid_angle += 360
         roid_dist = max(point2[0], point[0]) - min(point[0], point2[0]) + max(point2[1], point[1]) - min(point[1], point2[1])
         roid_dict.setdefault(roid_angle, []).append((roid_dist, point2))
@@ -65,16 +70,15 @@ def main():
             roid_dict[k] = roid_dict_s[k]
 
     cnt = 1
-    for k in roid_dict:
-        print(f'#{cnt}  {k}° {roid_dict[k].pop(0)}')
-        cnt += 1
-
-    for k in roid_dict:
-        if not roid_dict[k]:
-            continue
-        print(f'#{cnt}  {k}° {roid_dict[k].pop(0)}')
-        cnt += 1
-
+    goal = 200
+    while cnt < goal:
+        for k in roid_dict:
+            if not roid_dict[k]:
+                continue
+            print(f'#{cnt}  {k}° {roid_dict[k].pop(0)}')
+            cnt += 1
+            if cnt > goal:
+                break
 
 
 if __name__ == "__main__":
