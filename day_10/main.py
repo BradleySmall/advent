@@ -20,15 +20,18 @@ def get_stroid_addrs(map):
 
 def main():
     x = input_map()
-    l = get_stroid_addrs(x)
+    roid_list = get_stroid_addrs(x)
 
     ac_dict = {}
-    for point in l:
+    for point in roid_list:
         angles = set()
-        for point2 in l:
+        for point2 in roid_list:
             if point2 == point:
                 continue
-            angles.add( math.atan2(point2[0] - point[0], point2[1] - point[1]) * 180 / math.pi)
+            angles.add(
+                math.atan2(point2[0] - point[0],
+                           point2[1] - point[1]) * 180 / math.pi
+            )
 
         ac_dict[point] = len(angles)
 
@@ -47,16 +50,24 @@ def main():
     point = bigd
 
     roid_dict = {}
-    for point2 in l:
+    for point2 in roid_list:
         if point2 == point:
             continue
-        roid_angle = (math.atan2(point2[0] - point[0], point2[1] - point[1]) * 180 / math.pi)
+        roid_angle = (
+            math.atan2(point2[0] - point[0],
+                       point2[1] - point[1]) * 180 / math.pi
+        )
         if roid_angle < 0:
             roid_angle += 360
-        roid_dist = max(point2[0], point[0]) - min(point[0], point2[0]) + max(point2[1], point[1]) - min(point[1], point2[1])
+        roid_dist = (
+            max(point2[0], point[0])
+            - min(point[0], point2[0])
+            + max(point2[1], point[1])
+            - min(point[1], point2[1])
+        )
         roid_dict.setdefault(roid_angle, []).append((roid_dist, point2))
 
-    roid_dict_s = {k:sorted(v) for (k, v) in roid_dict.items()}
+    roid_dict_s = {k: sorted(v) for (k, v) in roid_dict.items()}
 
     roid_dict = {}
     for k in sorted(roid_dict_s):
@@ -72,7 +83,7 @@ def main():
         for k in roid_dict:
             if not roid_dict[k]:
                 continue
-            print(f'#{cnt}  {k}° {roid_dict[k].pop(0)}')
+            print(f"#{cnt}  {k}° {roid_dict[k].pop(0)}")
             cnt += 1
             if cnt > goal:
                 break
