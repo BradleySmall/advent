@@ -23,8 +23,6 @@ def main():
     l = get_stroid_addrs(x)
 
     ac_dict = {}
-    # ac_dict2 = {}
-
     for point in l:
         angles = set()
         for point2 in l:
@@ -33,11 +31,10 @@ def main():
             angles.add( math.atan2(point2[0] - point[0], point2[1] - point[1]) * 180 / math.pi)
 
         ac_dict[point] = len(angles)
-        # ac_dict2[point] = angles
 
-     # for k in ac_dict:
-     #     print(k, ac_dict[k])
-     # print(max(ac_dict.values()))
+    # for k in ac_dict:
+    #     print(k, ac_dict[k])
+    # print(max(ac_dict.values()))
 
     maxd = 0
     bigd = ()
@@ -53,7 +50,7 @@ def main():
     for point2 in l:
         if point2 == point:
             continue
-        roid_angle = round((math.atan2(point2[0] - point[0], point2[1] - point[1]) * 180 / math.pi))
+        roid_angle = (math.atan2(point2[0] - point[0], point2[1] - point[1]) * 180 / math.pi)
         if roid_angle < 0:
             roid_angle += 360
         roid_dist = max(point2[0], point[0]) - min(point[0], point2[0]) + max(point2[1], point[1]) - min(point[1], point2[1])
